@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Responder Pregunta</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 2em;
+    }
+    textarea, input, button {
+      width: 100%;
+      margin-top: 1em;
+      padding: 0.5em;
+    }
+    .resultado {
+      background-color: #f0f0f0;
+      padding: 1em;
+      margin-top: 1em;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>🧠 Responde una pregunta según un texto</h1>
+
+  <label for="texto">Texto base:</label>
+  <textarea id="texto" rows="6" placeholder="Escribe aquí el texto..."></textarea>
+
+  <label for="pregunta">Pregunta:</label>
+  <input id="pregunta" type="text" placeholder="¿Cuál es la pregunta que quieres hacer?">
+
+  <button onclick="responder()">Responder</button>
+
+  <div id="resultado" class="resultado"></div>
+
+  <script>
+    async function responder() {
+      const texto = document.getElementById('texto').value;
+      const pregunta = document.getElementById('pregunta').value;
+      const resultadoDiv = document.getElementById('resultado');
+      resultadoDiv.innerHTML = '⌛ Buscando respuesta...';
+
+      const response = await fetch('/pregunta', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ texto, pregunta })
+      });
+
+      const data = await response.json();
+      if (data.resultado) {
+        resultadoDiv.innerHTML = `<h3>Respuesta:</h3><p>${data.resultado}</p>`;
+      } else {
+        resultadoDiv.innerHTML = `<strong>Error:</strong> ${data.error}`;
+      }
+    }
+  </script>
+
+</body>
+</html>
