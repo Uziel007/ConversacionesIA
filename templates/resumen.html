@@ -1,51 +1,81 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
+  <!-- Configuración básica del documento -->
   <meta charset="UTF-8">
   <title>Generador de Resumen</title>
+  <!-- Estilos CSS para la página -->
   <style>
+    /* Estilos generales del cuerpo del documento */
     body {
-      font-family: Arial, sans-serif;
-      margin: 2em;
+      font-family: Arial, sans-serif;  /* Fuente principal */
+      margin: 2em;  /* Margen exterior */
     }
+    /* Estilos comunes para textareas, inputs y botones */
     textarea, input, button {
-      width: 100%;
-      margin-top: 1em;
-      padding: 0.5em;
+      width: 100%;  /* Ocupar todo el ancho disponible */
+      margin-top: 1em;  /* Margen superior */
+      padding: 0.5em;  /* Espaciado interno */
     }
+    /* Estilo para el área de resultados */
     .resultado {
-      background-color: #f0f0f0;
-      padding: 1em;
-      margin-top: 1em;
+      background-color: #f0f0f0;  /* Color de fondo */
+      padding: 1em;  /* Espaciado interno */
+      margin-top: 1em;  /* Margen superior */
     }
   </style>
 </head>
 <body>
 
+  <!-- Título principal de la aplicación -->
   <h1>📚 Generador de Resumen</h1>
+  
+  <!-- Área de entrada de texto -->
   <label for="texto">Escribe un texto largo (mínimo 20 palabras):</label>
   <textarea id="texto" rows="8" placeholder="Escribe aquí tu texto..."></textarea>
+  
+  <!-- Botón para generar el resumen -->
   <button onclick="generarResumen()">Generar Resumen</button>
 
+  <!-- Contenedor donde se mostrará el resultado -->
   <div id="resultado" class="resultado"></div>
 
   <script>
+    /**
+     * Función asíncrona para generar un resumen del texto proporcionado.
+     * Se comunica con un servidor backend mediante una API REST.
+     */
     async function generarResumen() {
+      // Obtener el texto ingresado por el usuario
       const texto = document.getElementById('texto').value;
+      
+      // Referencia al div donde se mostrará el resultado
       const resultadoDiv = document.getElementById('resultado');
+      
+      // Mostrar mensaje de carga mientras se procesa
       resultadoDiv.innerHTML = '⌛ Generando resumen...';
 
-      const response = await fetch('/resumen', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ texto })
-      });
+      try {
+        // Enviar solicitud POST al endpoint '/resumen' del servidor
+        const response = await fetch('/resumen', {
+          method: 'POST',  // Método HTTP
+          headers: { 'Content-Type': 'application/json' },  // Cabeceras
+          body: JSON.stringify({ texto })  // Cuerpo con el texto a resumir
+        });
 
-      const data = await response.json();
-      if (data.resultado) {
-        resultadoDiv.innerHTML = '<h3>Resumen Generado:</h3><p>' + data.resultado + '</p>';
-      } else {
-        resultadoDiv.innerHTML = `<strong>Error:</strong> ${data.error}`;
+        // Procesar la respuesta del servidor
+        const data = await response.json();
+        
+        // Si la respuesta contiene un resultado, mostrarlo
+        if (data.resultado) {
+          resultadoDiv.innerHTML = '<h3>Resumen Generado:</h3><p>' + data.resultado + '</p>';
+        } else {
+          // Si hay un error, mostrarlo al usuario
+          resultadoDiv.innerHTML = `<strong>Error:</strong> ${data.error}`;
+        }
+      } catch (error) {
+        // Manejar errores de conexión o del servidor
+        resultadoDiv.innerHTML = `<strong>Error de conexión:</strong> ${error.message}`;
       }
     }
   </script>
