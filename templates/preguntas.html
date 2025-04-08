@@ -1,56 +1,86 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
+  <!-- Configuración básica del documento -->
   <meta charset="UTF-8">
   <title>Generador de Preguntas</title>
+  <!-- Estilos CSS para la interfaz de usuario -->
   <style>
+    /* Estilos generales de la página */
     body {
-      font-family: Arial, sans-serif;
-      margin: 2em;
+      font-family: Arial, sans-serif;  /* Fuente principal legible */
+      margin: 2em;  /* Margen exterior para mejor espaciado */
     }
+    /* Estilos consistentes para elementos de formulario */
     textarea, input, button {
-      width: 100%;
-      margin-top: 1em;
-      padding: 0.5em;
+      width: 100%;  /* Ocupar todo el ancho disponible */
+      margin-top: 1em;  /* Espaciado superior uniforme */
+      padding: 0.5em;  /* Relleno interno para mejor usabilidad */
     }
+    /* Estilo para el área de resultados */
     .resultado {
-      background-color: #f0f0f0;
-      padding: 1em;
-      margin-top: 1em;
+      background-color: #f0f0f0;  /* Fondo diferenciado para resultados */
+      padding: 1em;  /* Espaciado interno */
+      margin-top: 1em;  /* Separación del resto de elementos */
     }
   </style>
 </head>
 <body>
-<!--Este es el apartado de generador de preguntas-->
+<!-- Sección principal del generador de preguntas -->
   <h1>🧠 Generador de Preguntas</h1>
+  
+  <!-- Campo para ingresar el texto base -->
   <label for="texto">Escribe un texto largo (mínimo 20 palabras):</label>
   <textarea id="texto" rows="8" placeholder="Escribe aquí tu texto..."></textarea>
+  
+  <!-- Botón para iniciar la generación de preguntas -->
   <button onclick="generarPreguntas()">Generar Preguntas</button>
 
+  <!-- Contenedor para mostrar los resultados -->
   <div id="resultado" class="resultado"></div>
-<!--Se trabaja con el metodo de manera Asyncrona-->
+
+<!-- Script con la lógica principal de la aplicación -->
   <script>
+    /**
+     * Función asíncrona para generar preguntas basadas en un texto
+     * Se comunica con un backend mediante API REST
+     */
     async function generarPreguntas() {
+      // Obtener el texto ingresado por el usuario
       const texto = document.getElementById('texto').value;
+      
+      // Referencia al contenedor de resultados
       const resultadoDiv = document.getElementById('resultado');
+      
+      // Mostrar estado de procesamiento
       resultadoDiv.innerHTML = '⌛ Generando preguntas...';
 
-      const response = await fetch('/generar_preguntas', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ texto })
-      });
+      try {
+        // Enviar solicitud POST al endpoint del backend
+        const response = await fetch('/generar_preguntas', {
+          method: 'POST',  // Método HTTP
+          headers: { 'Content-Type': 'application/json' },  // Cabeceras
+          body: JSON.stringify({ texto })  // Datos enviados al servidor
+        });
 
-      const data = await response.json();
-      if (data.preguntas_generadas) {
-        resultadoDiv.innerHTML = '<h3>Preguntas Generadas:</h3><ul>' +
-          data.preguntas_generadas.map(p => `<li>${p}</li>`).join('') + '</ul>';
-      } else {
-        resultadoDiv.innerHTML = `<strong>Error:</strong> ${data.error}`;
+        // Procesar la respuesta JSON del servidor
+        const data = await response.json();
+        
+        // Si la respuesta contiene preguntas, mostrarlas en una lista
+        if (data.preguntas_generadas) {
+          resultadoDiv.innerHTML = '<h3>Preguntas Generadas:</h3><ul>' +
+            // Convertir array de preguntas en elementos <li>
+            data.preguntas_generadas.map(p => `<li>${p}</li>`).join('') + '</ul>';
+        } else {
+          // Mostrar mensaje de error si existe
+          resultadoDiv.innerHTML = `<strong>Error:</strong> ${data.error}`;
+        }
+      } catch (error) {
+        // Manejar errores de conexión o del servidor
+        resultadoDiv.innerHTML = `<strong>Error de conexión:</strong> ${error.message}`;
       }
     }
   </script>
 
 </body>
 </html>
-
