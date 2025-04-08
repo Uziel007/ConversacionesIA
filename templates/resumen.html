@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Generador de Resumen</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 2em;
+    }
+    textarea, input, button {
+      width: 100%;
+      margin-top: 1em;
+      padding: 0.5em;
+    }
+    .resultado {
+      background-color: #f0f0f0;
+      padding: 1em;
+      margin-top: 1em;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>📚 Generador de Resumen</h1>
+  <label for="texto">Escribe un texto largo (mínimo 20 palabras):</label>
+  <textarea id="texto" rows="8" placeholder="Escribe aquí tu texto..."></textarea>
+  <button onclick="generarResumen()">Generar Resumen</button>
+
+  <div id="resultado" class="resultado"></div>
+
+  <script>
+    async function generarResumen() {
+      const texto = document.getElementById('texto').value;
+      const resultadoDiv = document.getElementById('resultado');
+      resultadoDiv.innerHTML = '⌛ Generando resumen...';
+
+      const response = await fetch('/resumen', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ texto })
+      });
+
+      const data = await response.json();
+      if (data.resultado) {
+        resultadoDiv.innerHTML = '<h3>Resumen Generado:</h3><p>' + data.resultado + '</p>';
+      } else {
+        resultadoDiv.innerHTML = `<strong>Error:</strong> ${data.error}`;
+      }
+    }
+  </script>
+
+</body>
+</html>

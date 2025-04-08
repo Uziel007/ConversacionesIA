@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>🎨 Generador de Imágenes</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 2em;
+    }
+    textarea, input, button {
+      width: 100%;
+      margin-top: 1em;
+      padding: 0.5em;
+      box-sizing: border-box;
+    }
+    .resultado {
+      margin-top: 2em;
+    }
+    img {
+      max-width: 100%;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+    }
+    .oculto {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>🖼️ Generador de Imágenes con IA</h1>
+
+  <label for="prompt">Describe la imagen que deseas generar:</label>
+  <textarea id="prompt" rows="4" placeholder="Ejemplo: Un castillo flotando en el cielo, al atardecer..."></textarea>
+
+  <!-- Sección visible de los controles -->
+  <button onclick="toggleControles()">Mostrar/Ocultar Controles</button>
+
+  <div id="controles" class="oculto">
+    <label for="width">Ancho (max 768):</label>
+    <input type="number" id="width" value="384" min="64" max="768">
+
+    <label for="height">Alto (max 768):</label>
+    <input type="number" id="height" value="384" min="64" max="768">
+
+    <label for="steps">Pasos (max 50):</label>
+    <input type="number" id="steps" value="50" min="1" max="50">
+  </div>
+
+  <button onclick="generarImagen()">Generar Imagen</button>
+
+  <div class="resultado" id="resultado"></div>
+
+  <script>
+    // Función para mostrar u ocultar los controles de ancho, alto y pasos
+    function toggleControles() {
+      const controles = document.getElementById('controles');
+      controles.classList.toggle('oculto');
+    }
+
+    // Función para generar la imagen
+    async function generarImagen() {
+      const prompt = document.getElementById('prompt').value;
+      const width = document.getElementById('width').value;
+      const height = document.getElementById('height').value;
+      const steps = document.getElementById('steps').value;
+      const resultadoDiv = document.getElementById('resultado');
+
+      if (!prompt.trim()) {
+        resultadoDiv.innerHTML = '<p style="color:red;">⚠️ Escribe un prompt para generar la imagen.</p>';
+        return;
+      }
+
+      resultadoDiv.innerHTML = '⌛ Generando imagen... por favor espera...';
+
+      try {
+        const response = await fetch('/generar_imagen', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ prompt, width, height, steps })
+        });
+
+        if (!response.ok) {
+          const errorData = await response.json();
+          throw new Error(errorData.error || 'Error desconocido al generar imagen');
+        }
+
+        const blob = await response.blob();
+        const imgUrl = URL.createObjectURL(blob);
+
+        resultadoDiv.innerHTML = `<h3>Imagen generada:</h3><img src="${imgUrl}" alt="Imagen generada">`;
+      } catch (err) {
+        resultadoDiv.innerHTML = `<p style="color:red;">❌ Error: ${err.message}</p>`;
+      }
+    }
+  </script>
+
+</body>
+</html>

@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Traductor EN ➜ ES</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 2em;
+    }
+    textarea, input, button {
+      width: 100%;
+      margin-top: 1em;
+      padding: 0.5em;
+    }
+    .resultado {
+      background-color: #f0f0f0;
+      padding: 1em;
+      margin-top: 1em;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>🌍 Traductor de Inglés a Español</h1>
+  <label for="texto">Escribe un texto en inglés:</label>
+  <textarea id="texto" rows="6" placeholder="Escribe aquí tu texto en inglés..."></textarea>
+  <button onclick="traducirTexto()">Traducir</button>
+
+  <div id="resultado" class="resultado"></div>
+
+  <script>
+    async function traducirTexto() {
+      const texto = document.getElementById('texto').value;
+      const resultadoDiv = document.getElementById('resultado');
+      resultadoDiv.innerHTML = '⌛ Traduciendo...';
+
+      const response = await fetch('/traducir', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ texto })
+      });
+
+      const data = await response.json();
+      if (data.resultado) {
+        resultadoDiv.innerHTML = `<h3>Traducción:</h3><p>${data.resultado}</p>`;
+      } else {
+        resultadoDiv.innerHTML = `<strong>Error:</strong> ${data.error}`;
+      }
+    }
+  </script>
+
+</body>
+</html>
