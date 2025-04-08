@@ -1,0 +1,1 @@
+Me enfoco en el desarrollo de generacion de imagen con t5
