@@ -1,51 +1,90 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
+  <!-- Metadatos básicos -->
   <meta charset="UTF-8">
   <title>Traductor EN ➜ ES</title>
+  
+  <!-- Estilos CSS para la interfaz -->
   <style>
     body {
-      font-family: Arial, sans-serif;
-      margin: 2em;
+      font-family: Arial, sans-serif;  /* Fuente principal */
+      margin: 2em;  /* Margen exterior */
     }
+    /* Estilos comunes para inputs/textarea/botón */
     textarea, input, button {
-      width: 100%;
-      margin-top: 1em;
-      padding: 0.5em;
+      width: 100%;  /* Ocupar todo el ancho */
+      margin-top: 1em;  /* Espaciado superior */
+      padding: 0.5em;  /* Relleno interno */
     }
+    /* Estilo del contenedor de resultados */
     .resultado {
-      background-color: #f0f0f0;
-      padding: 1em;
-      margin-top: 1em;
+      background-color: #f0f0f0;  /* Fondo gris claro */
+      padding: 1em;  /* Relleno interno */
+      margin-top: 1em;  /* Espaciado superior */
     }
   </style>
 </head>
 <body>
 
+  <!-- Encabezado principal -->
   <h1>🌍 Traductor de Inglés a Español</h1>
+  
+  <!-- Área de entrada de texto -->
   <label for="texto">Escribe un texto en inglés:</label>
-  <textarea id="texto" rows="6" placeholder="Escribe aquí tu texto en inglés..."></textarea>
+  <textarea 
+    id="texto" 
+    rows="6" 
+    placeholder="Escribe aquí tu texto en inglés...">
+  </textarea>
+  
+  <!-- Botón para ejecutar la traducción -->
   <button onclick="traducirTexto()">Traducir</button>
 
+  <!-- Contenedor donde se mostrarán los resultados -->
   <div id="resultado" class="resultado"></div>
 
+  <!-- Script con la lógica de traducción -->
   <script>
+    /**
+     * Función asíncrona que maneja el proceso de traducción
+     * 1. Obtiene el texto del textarea
+     * 2. Muestra un mensaje de carga
+     * 3. Envía el texto al servidor (/traducir)
+     * 4. Muestra el resultado o error
+     */
     async function traducirTexto() {
+      // 1. Obtener texto a traducir
       const texto = document.getElementById('texto').value;
       const resultadoDiv = document.getElementById('resultado');
+      
+      // 2. Mostrar estado de carga
       resultadoDiv.innerHTML = '⌛ Traduciendo...';
 
-      const response = await fetch('/traducir', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ texto })
-      });
+      try {
+        // 3. Enviar petición al backend
+        const response = await fetch('/traducir', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ texto })  // Datos en formato JSON
+        });
 
-      const data = await response.json();
-      if (data.resultado) {
-        resultadoDiv.innerHTML = `<h3>Traducción:</h3><p>${data.resultado}</p>`;
-      } else {
-        resultadoDiv.innerHTML = `<strong>Error:</strong> ${data.error}`;
+        // Procesar respuesta
+        const data = await response.json();
+        
+        // 4. Mostrar resultados
+        if (data.resultado) {
+          resultadoDiv.innerHTML = `
+            <h3>Traducción:</h3>
+            <p>${data.resultado}</p>
+          `;
+        } else {
+          // Manejo de errores del servidor
+          resultadoDiv.innerHTML = `<strong>Error:</strong> ${data.error || 'Error desconocido'}`;
+        }
+      } catch (error) {
+        // Manejo de errores de conexión
+        resultadoDiv.innerHTML = `<strong>Error de conexión:</strong> ${error.message}`;
       }
     }
   </script>
