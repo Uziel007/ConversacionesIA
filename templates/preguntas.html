@@ -21,14 +21,14 @@
   </style>
 </head>
 <body>
-
+<!--Este es el apartado de generador de preguntas-->
   <h1>🧠 Generador de Preguntas</h1>
   <label for="texto">Escribe un texto largo (mínimo 20 palabras):</label>
   <textarea id="texto" rows="8" placeholder="Escribe aquí tu texto..."></textarea>
   <button onclick="generarPreguntas()">Generar Preguntas</button>
 
   <div id="resultado" class="resultado"></div>
-
+<!--Se trabaja con el metodo de manera Asyncrona-->
   <script>
     async function generarPreguntas() {
       const texto = document.getElementById('texto').value;
