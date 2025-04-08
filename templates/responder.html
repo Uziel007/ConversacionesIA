@@ -1,57 +1,85 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
+  <!-- Configuración básica del documento HTML -->
   <meta charset="UTF-8">
   <title>Responder Pregunta</title>
+  <!-- Estilos CSS para la interfaz -->
   <style>
+    /* Estilos generales del cuerpo del documento */
     body {
-      font-family: Arial, sans-serif;
-      margin: 2em;
+      font-family: Arial, sans-serif;  /* Fuente principal */
+      margin: 2em;  /* Margen exterior para mejor espaciado */
     }
+    /* Estilos uniformes para áreas de texto, inputs y botones */
     textarea, input, button {
-      width: 100%;
-      margin-top: 1em;
-      padding: 0.5em;
+      width: 100%;  /* Ocupar todo el ancho disponible */
+      margin-top: 1em;  /* Margen superior para separación */
+      padding: 0.5em;  /* Espaciado interno para mejor legibilidad */
     }
+    /* Estilo para el contenedor de resultados */
     .resultado {
-      background-color: #f0f0f0;
-      padding: 1em;
-      margin-top: 1em;
+      background-color: #f0f0f0;  /* Color de fondo diferenciado */
+      padding: 1em;  /* Espaciado interno */
+      margin-top: 1em;  /* Margen superior para separación */
     }
   </style>
 </head>
 <body>
 
+  <!-- Título principal de la aplicación -->
   <h1>🧠 Responde una pregunta según un texto</h1>
 
+  <!-- Sección para ingresar el texto base -->
   <label for="texto">Texto base:</label>
   <textarea id="texto" rows="6" placeholder="Escribe aquí el texto..."></textarea>
 
+  <!-- Sección para ingresar la pregunta -->
   <label for="pregunta">Pregunta:</label>
   <input id="pregunta" type="text" placeholder="¿Cuál es la pregunta que quieres hacer?">
 
+  <!-- Botón para enviar la consulta -->
   <button onclick="responder()">Responder</button>
 
+  <!-- Contenedor para mostrar los resultados -->
   <div id="resultado" class="resultado"></div>
 
   <script>
+    /**
+     * Función asíncrona para obtener respuesta a una pregunta basada en un texto
+     * Se comunica con un backend mediante API REST
+     */
     async function responder() {
+      // Obtener los valores ingresados por el usuario
       const texto = document.getElementById('texto').value;
       const pregunta = document.getElementById('pregunta').value;
+      
+      // Referencia al div de resultados
       const resultadoDiv = document.getElementById('resultado');
+      
+      // Mostrar estado de procesamiento
       resultadoDiv.innerHTML = '⌛ Buscando respuesta...';
 
-      const response = await fetch('/pregunta', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ texto, pregunta })
-      });
+      try {
+        // Enviar solicitud POST al endpoint '/pregunta'
+        const response = await fetch('/pregunta', {
+          method: 'POST',  // Método HTTP
+          headers: { 'Content-Type': 'application/json' },  // Tipo de contenido
+          body: JSON.stringify({ texto, pregunta })  // Datos enviados al servidor
+        });
 
-      const data = await response.json();
-      if (data.resultado) {
-        resultadoDiv.innerHTML = `<h3>Respuesta:</h3><p>${data.resultado}</p>`;
-      } else {
-        resultadoDiv.innerHTML = `<strong>Error:</strong> ${data.error}`;
+        // Procesar la respuesta JSON del servidor
+        const data = await response.json();
+        
+        // Mostrar resultados o errores
+        if (data.resultado) {
+          resultadoDiv.innerHTML = `<h3>Respuesta:</h3><p>${data.resultado}</p>`;
+        } else {
+          resultadoDiv.innerHTML = `<strong>Error:</strong> ${data.error}`;
+        }
+      } catch (error) {
+        // Manejar errores de red o del servidor
+        resultadoDiv.innerHTML = `<strong>Error de conexión:</strong> ${error.message}`;
       }
     }
   </script>
