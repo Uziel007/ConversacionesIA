@@ -3,16 +3,20 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Generador IA - Dashboard</title>
+  <title>Generador IA - Dashboard Avanzado</title>
   <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
-  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
   <style>
     :root {
-      --primary-color: #4a6fa5;
-      --secondary-color: #166088;
+      --primary-color: #3a5a78;
+      --secondary-color: #0d4b6e;
       --accent-color: #4fc3f7;
       --light-color: #f8f9fa;
-      --dark-color: #343a40;
+      --dark-color: #2c3e50;
+      --success-color: #28a745;
+      --warning-color: #ffc107;
+      --danger-color: #dc3545;
     }
     
     body {
@@ -27,23 +31,69 @@
     .header {
       background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
       color: white;
-      padding: 2rem 0;
+      padding: 3rem 0 2rem;
       text-align: center;
       box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .header::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 5px;
+      background: linear-gradient(90deg, var(--accent-color), #ff6b6b, #feca57, #1dd1a1, var(--accent-color));
+      background-size: 400% 400%;
+      animation: gradientBG 15s ease infinite;
+    }
+    
+    @keyframes gradientBG {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+    
+    .main-logo {
+      width: 150px;
+      height: 150px;
+      margin: 0 auto 20px;
+      display: block;
+      border-radius: 50%;
+      border: 5px solid white;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+      background-color: white;
+      padding: 10px;
+      transition: transform 0.5s ease;
+    }
+    
+    .main-logo:hover {
+      transform: rotate(15deg) scale(1.05);
     }
     
     .header h1 {
       margin: 0;
-      font-size: 2.5rem;
+      font-size: 2.8rem;
       display: flex;
       align-items: center;
       justify-content: center;
+      position: relative;
+      z-index: 1;
     }
     
     .logo {
       width: 50px;
       height: 50px;
       margin-right: 15px;
+    }
+    
+    .header p {
+      max-width: 800px;
+      margin: 1rem auto 0;
+      font-size: 1.1rem;
+      opacity: 0.9;
     }
     
     .container {
@@ -60,17 +110,25 @@
       border-radius: 10px;
       overflow: hidden;
       box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      transition: all 0.3s ease;
       text-align: center;
-      padding: 20px;
+      padding: 25px 20px;
       display: flex;
       flex-direction: column;
       align-items: center;
+      position: relative;
+      border-top: 4px solid var(--accent-color);
     }
     
     .card:hover {
       transform: translateY(-10px);
       box-shadow: 0 15px 30px rgba(0,0,0,0.15);
+    }
+    
+    .card i {
+      font-size: 2.5rem;
+      color: var(--primary-color);
+      margin-bottom: 15px;
     }
     
     .card img {
@@ -82,60 +140,157 @@
     
     .card span {
       font-weight: bold;
-      font-size: 1.2rem;
+      font-size: 1.3rem;
       margin-bottom: 10px;
+      color: var(--dark-color);
     }
     
     .card a {
       text-decoration: none;
       color: var(--dark-color);
       width: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    
+    .card p {
+      margin: 0;
+      color: #666;
+      font-size: 0.95rem;
     }
     
     .info-section {
       max-width: 1200px;
-      margin: 3rem auto;
+      margin: 4rem auto;
       padding: 0 20px;
     }
     
     .info-card {
       background: white;
       border-radius: 10px;
-      padding: 25px;
+      padding: 30px;
       margin-bottom: 30px;
       box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+      border-left: 4px solid var(--accent-color);
     }
     
     .info-card h2 {
       color: var(--secondary-color);
       margin-top: 0;
-      border-bottom: 2px solid var(--accent-color);
       padding-bottom: 10px;
       display: flex;
       align-items: center;
+      font-size: 1.8rem;
     }
     
     .info-card h2 img {
-      width: 30px;
-      margin-right: 10px;
+      width: 40px;
+      margin-right: 15px;
+    }
+    
+    .info-card h3 {
+      color: var(--primary-color);
+      margin-top: 1.5rem;
+      border-bottom: 1px dashed #ddd;
+      padding-bottom: 5px;
     }
     
     .model-badge {
       display: inline-block;
       background-color: var(--accent-color);
       color: white;
-      padding: 5px 10px;
+      padding: 5px 15px;
       border-radius: 20px;
       font-size: 0.9rem;
-      margin-left: 10px;
+      margin-left: 15px;
+      font-weight: 500;
+    }
+    
+    .tech-stack {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 15px;
+      margin: 20px 0;
+    }
+    
+    .tech-item {
+      background: #f0f7ff;
+      padding: 8px 15px;
+      border-radius: 20px;
+      font-size: 0.9rem;
+      display: flex;
+      align-items: center;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    }
+    
+    .tech-item i {
+      margin-right: 8px;
+      color: var(--primary-color);
+    }
+    
+    .code-block {
+      background: #f8f9fa;
+      border-left: 4px solid var(--accent-color);
+      padding: 15px;
+      border-radius: 0 5px 5px 0;
+      overflow-x: auto;
+      font-family: 'Courier New', monospace;
+      font-size: 0.9rem;
+      margin: 20px 0;
+    }
+    
+    .features-list {
+      columns: 2;
+      column-gap: 30px;
+    }
+    
+    .features-list li {
+      margin-bottom: 10px;
+      break-inside: avoid;
     }
     
     footer {
       background: var(--dark-color);
       color: white;
       text-align: center;
-      padding: 1.5rem 0;
-      margin-top: 3rem;
+      padding: 2.5rem 0;
+      margin-top: 4rem;
+    }
+    
+    .footer-links {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      margin: 1.5rem 0;
+    }
+    
+    .footer-links a {
+      color: white;
+      text-decoration: none;
+      transition: color 0.3s;
+    }
+    
+    .footer-links a:hover {
+      color: var(--accent-color);
+    }
+    
+    .social-icons {
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+      margin: 1.5rem 0;
+    }
+    
+    .social-icons a {
+      color: white;
+      font-size: 1.5rem;
+      transition: transform 0.3s;
+    }
+    
+    .social-icons a:hover {
+      transform: translateY(-5px);
+      color: var(--accent-color);
     }
     
     @media (max-width: 768px) {
@@ -146,15 +301,45 @@
       .header h1 {
         font-size: 2rem;
       }
+      
+      .features-list {
+        columns: 1;
+      }
+      
+      .header p {
+        padding: 0 15px;
+      }
     }
+    
+    /* Animaciones */
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    .card, .info-card {
+      animation: fadeIn 0.6s ease forwards;
+    }
+    
+    .card:nth-child(1) { animation-delay: 0.1s; }
+    .card:nth-child(2) { animation-delay: 0.2s; }
+    .card:nth-child(3) { animation-delay: 0.3s; }
+    .card:nth-child(4) { animation-delay: 0.4s; }
+    .card:nth-child(5) { animation-delay: 0.5s; }
+    
+    .info-card:nth-child(1) { animation-delay: 0.6s; }
+    .info-card:nth-child(2) { animation-delay: 0.7s; }
+    .info-card:nth-child(3) { animation-delay: 0.8s; }
   </style>
 </head>
 <body>
   <div class="header">
+    <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Logo IA" class="main-logo">
     <h1>
       <img src="{{ url_for('static', filename='images/robo.png') }}" alt="AI Logo" class="logo">
       Herramientas Inteligentes IA
     </h1>
+    <p>Plataforma integral de procesamiento de lenguaje natural y generación de contenido mediante inteligencia artificial</p>
   </div>
   
   <div class="container">
@@ -162,7 +347,7 @@
       <a href="/preguntas">
         <img src="{{ url_for('static', filename='images/preguntas.png') }}" alt="Preguntas">
         <span>Generar Preguntas</span>
-        <p>Crea preguntas relevantes a partir de cualquier texto</p>
+        <p>Crea preguntas relevantes a partir de cualquier texto usando el modelo T5 fine-tuned</p>
       </a>
     </div>
     
@@ -170,7 +355,7 @@
       <a href="/resumen">
         <img src="{{ url_for('static', filename='images/resumen.png') }}" alt="Resumen">
         <span>Resumir Texto</span>
-        <p>Obtén resúmenes concisos de documentos largos</p>
+        <p>Obtén resúmenes concisos de documentos largos con el modelo T5-small</p>
       </a>
     </div>
     
@@ -178,7 +363,7 @@
       <a href="/traducir">
         <img src="{{ url_for('static', filename='images/traduccion.png') }}" alt="Traducir">
         <span>Traducir Texto</span>
-        <p>Traduce contenido de inglés a español</p>
+        <p>Traduce contenido de inglés a español con Helsinki-NLP/opus-mt-en-es</p>
       </a>
     </div>
     
@@ -186,7 +371,7 @@
       <a href="/responder">
         <img src="{{ url_for('static', filename='images/responder.png') }}" alt="Responder">
         <span>Responder Pregunta</span>
-        <p>Obtén respuestas basadas en contexto</p>
+        <p>Obtén respuestas basadas en contexto con el modelo T5-small</p>
       </a>
     </div>
     
@@ -194,7 +379,7 @@
       <a href="/imagen">
         <img src="{{ url_for('static', filename='images/imagenes.png') }}" alt="Imagen">
         <span>Generar Imagen</span>
-        <p>Crea imágenes a partir de descripciones textuales</p>
+        <p>Crea imágenes a partir de descripciones textuales con Stable Diffusion v1.5</p>
       </a>
     </div>
   </div>
@@ -205,8 +390,26 @@
         <img src="{{ url_for('static', filename='images/cere.png') }}" alt="Transformers">
         ¿Qué son los Transformers?
       </h2>
-      <p>Los Transformers son una arquitectura de red neuronal introducida en 2017 que ha revolucionado el procesamiento del lenguaje natural (NLP). Utilizan mecanismos de atención para procesar secuencias de datos, permitiendo entender el contexto completo de las palabras en un texto.</p>
-      <p>Esta tecnología es la base de modelos avanzados como GPT, BERT y T5, que pueden realizar tareas como traducción, generación de texto y resumen con un rendimiento similar al humano.</p>
+      <p>Los Transformers son una arquitectura de red neuronal introducida en el paper "Attention Is All You Need" en 2017 que ha revolucionado el procesamiento del lenguaje natural (NLP). Utilizan mecanismos de auto-atención para procesar secuencias de datos, permitiendo entender el contexto completo de las palabras en un texto sin necesidad de recurrencia.</p>
+      
+      <h3>Características clave:</h3>
+      <ul class="features-list">
+        <li><strong>Mecanismo de Atención:</strong> Analiza todas las palabras en la secuencia simultáneamente</li>
+        <li><strong>Arquitectura Encoder-Decoder:</strong> Ideal para tareas de transformación de secuencias</li>
+        <li><strong>Paralelización:</strong> Más eficiente que las RNN/LSTM tradicionales</li>
+        <li><strong>Transfer Learning:</strong> Modelos pre-entrenados que pueden fine-tunearse</li>
+        <li><strong>Contexto Bidireccional:</strong> Entiende el contexto completo de cada palabra</li>
+        <li><strong>Escalabilidad:</strong> Mejora con más datos y parámetros</li>
+      </ul>
+      
+      <h3>Modelos basados en Transformers:</h3>
+      <div class="tech-stack">
+        <div class="tech-item"><i class="fas fa-robot"></i> GPT-3/4</div>
+        <div class="tech-item"><i class="fas fa-language"></i> BERT</div>
+        <div class="tech-item"><i class="fas fa-exchange-alt"></i> T5</div>
+        <div class="tech-item"><i class="fas fa-project-diagram"></i> Transformer-XL</div>
+        <div class="tech-item"><i class="fas fa-brain"></i> RoBERTa</div>
+      </div>
     </div>
     
     <div class="info-card">
@@ -214,14 +417,105 @@
         <img src="{{ url_for('static', filename='images/t.png') }}" alt="T5 Model">
         Modelo T5 <span class="model-badge">Text-to-Text Transfer Transformer</span>
       </h2>
-      <p>El modelo T5 (Text-To-Text Transfer Transformer) es un framework unificado que convierte todos los problemas de lenguaje en un formato texto-a-texto. Esto significa que tanto las entradas como las salidas son siempre cadenas de texto.</p>
-      <p>En esta aplicación utilizamos T5 para tareas como resumen de texto y respuesta a preguntas. Su versatilidad permite un excelente rendimiento en múltiples tareas de NLP con una sola arquitectura de modelo.</p>
+      <p>El modelo T5 (Text-To-Text Transfer Transformer) es un framework unificado desarrollado por Google que convierte todos los problemas de lenguaje en un formato texto-a-texto. Esto significa que tanto las entradas como las salidas son siempre cadenas de texto, permitiendo usar la misma arquitectura para múltiples tareas.</p>
+      
+      <h3>Implementación en esta aplicación:</h3>
+      <div class="code-block">
+        # Cargar modelo T5 para resumen y respuesta a preguntas<br>
+        t5_model_name = "t5-small"<br>
+        t5_tokenizer = T5Tokenizer.from_pretrained(t5_model_name)<br>
+        t5_model = T5ForConditionalGeneration.from_pretrained(t5_model_name)<br><br>
+        
+        # Ejemplo de generación de resumen<br>
+        entrada = "summarize in Spanish: {texto}"<br>
+        tokens = t5_tokenizer(entrada, return_tensors="pt").input_ids<br>
+        salida = t5_model.generate(tokens, max_length=150)<br>
+        resumen = t5_tokenizer.decode(salida[0], skip_special_tokens=True)
+      </div>
+      
+      <h3>Ventajas del enfoque T5:</h3>
+      <ul>
+        <li><strong>Unificación:</strong> Mismo modelo para múltiples tareas (resumen, traducción, clasificación)</li>
+        <li><strong>Flexibilidad:</strong> Fácil adaptación a nuevas tareas mediante prefijos</li>
+        <li><strong>Eficiencia:</strong> Comparte parámetros entre todas las tareas</li>
+        <li><strong>Calidad:</strong> Resultados competitivos en benchmarks estándar</li>
+      </ul>
+    </div>
+    
+    <div class="info-card">
+      <h2>
+        <i class="fas fa-code"></i>
+        Desarrollo de la Práctica
+      </h2>
+      <p>Esta aplicación fue desarrollada como un proyecto integral que demuestra el uso de modelos de Transformers para diversas tareas de procesamiento de lenguaje natural y generación de imágenes.</p>
+      
+      <h3>Stack Tecnológico:</h3>
+      <div class="tech-stack">
+        <div class="tech-item"><i class="fab fa-python"></i> Python 3.9+</div>
+        <div class="tech-item"><i class="fas fa-fire"></i> Flask</div>
+        <div class="tech-item"><i class="fas fa-brain"></i> Transformers</div>
+        <div class="tech-item"><i class="fas fa-image"></i> Diffusers</div>
+        <div class="tech-item"><i class="fas fa-bolt"></i> PyTorch</div>
+        <div class="tech-item"><i class="fas fa-server"></i> HuggingFace</div>
+        <div class="tech-item"><i class="fab fa-html5"></i> HTML5</div>
+        <div class="tech-item"><i class="fab fa-css3-alt"></i> CSS3</div>
+      </div>
+      
+      <h3>Arquitectura del Sistema:</h3>
+      <div class="code-block">
+        from flask import Flask, request, jsonify<br>
+        from transformers import pipeline, T5ForConditionalGeneration, T5Tokenizer<br>
+        from diffusers import StableDiffusionPipeline<br>
+        import torch<br><br>
+        
+        # Inicialización de la aplicación Flask<br>
+        app = Flask(__name__)<br><br>
+        
+        # Carga de modelos<br>
+        @app.before_first_request<br>
+        def load_models():<br>
+        &nbsp;&nbsp;# Modelos de NLP<br>
+        &nbsp;&nbsp;t5_model = T5ForConditionalGeneration.from_pretrained("t5-small")<br>
+        &nbsp;&nbsp;# Modelo de imágenes<br>
+        &nbsp;&nbsp;sd_pipeline = StableDiffusionPipeline.from_pretrained("runwayml/stable-diffusion-v1-5")<br><br>
+        
+        # Endpoints API<br>
+        @app.route('/resumen', methods=['POST'])<br>
+        def resumen():<br>
+        &nbsp;&nbsp;# Lógica de generación de resumen<br>
+        &nbsp;&nbsp;return jsonify({"resultado": resumen_generado})
+      </div>
+      
+      <h3>Características de Implementación:</h3>
+      <ul>
+        <li><strong>Carga eficiente de modelos:</strong> Los modelos se cargan una vez al inicio</li>
+        <li><strong>Manejo de errores:</strong> Validación de entradas y respuestas de error claras</li>
+        <li><strong>Optimización:</strong> Uso de GPU cuando está disponible</li>
+        <li><strong>Interfaz amigable:</strong> Diseño responsive y accesible</li>
+        <li><strong>Documentación:</strong> Explicación detallada de cada funcionalidad</li>
+      </ul>
+      
+      <h3>Modelos Utilizados:</h3>
+      <ul>
+        <li><strong>Generación de preguntas:</strong> mrm8488/t5-base-finetuned-question-generation-ap</li>
+        <li><strong>Resumen y respuesta:</strong> t5-small</li>
+        <li><strong>Traducción:</strong> Helsinki-NLP/opus-mt-en-es</li>
+        <li><strong>Generación de imágenes:</strong> runwayml/stable-diffusion-v1-5</li>
+      </ul>
     </div>
   </div>
   
   <footer>
-    <p>© 2023 Generador IA - Todos los derechos reservados</p>
-    <p>Powered by Transformers & Stable Diffusion</p>
+    <div class="footer-links">
+      <a href="#"><i class="fas fa-home"></i> Inicio</a>
+      <a href="#"><i class="fas fa-info-circle"></i> Acerca de</a>
+      <a href="#"><i class="fas fa-book"></i> Documentación</a>
+      <a href="#"><i class="fas fa-envelope"></i> Contacto</a>
+    </div>
+    
+    <p>© 2023 Generador IA - Plataforma de Inteligencia Artificial</p>
+    <p>Powered by Transformers, Stable Diffusion y Flask</p>
+    <p><small>Versión 1.0.0 - Todos los derechos reservados</small></p>
   </footer>
 </body>
 </html>
