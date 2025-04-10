@@ -1,20 +1,227 @@
-<!-- templates/index.html -->
 <!DOCTYPE html>
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <title>Generador IA</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Generador IA - Dashboard</title>
   <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
   <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary-color: #4a6fa5;
+      --secondary-color: #166088;
+      --accent-color: #4fc3f7;
+      --light-color: #f8f9fa;
+      --dark-color: #343a40;
+    }
+    
+    body {
+      font-family: 'Roboto', sans-serif;
+      line-height: 1.6;
+      color: #333;
+      background-color: #f5f7fa;
+      margin: 0;
+      padding: 0;
+    }
+    
+    .header {
+      background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+      color: white;
+      padding: 2rem 0;
+      text-align: center;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+    
+    .header h1 {
+      margin: 0;
+      font-size: 2.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .logo {
+      width: 50px;
+      height: 50px;
+      margin-right: 15px;
+    }
+    
+    .container {
+      max-width: 1200px;
+      margin: 2rem auto;
+      padding: 0 20px;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 25px;
+    }
+    
+    .card {
+      background: white;
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      text-align: center;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    
+    .card:hover {
+      transform: translateY(-10px);
+      box-shadow: 0 15px 30px rgba(0,0,0,0.15);
+    }
+    
+    .card img {
+      width: 80px;
+      height: 80px;
+      object-fit: contain;
+      margin-bottom: 15px;
+    }
+    
+    .card span {
+      font-weight: bold;
+      font-size: 1.2rem;
+      margin-bottom: 10px;
+    }
+    
+    .card a {
+      text-decoration: none;
+      color: var(--dark-color);
+      width: 100%;
+    }
+    
+    .info-section {
+      max-width: 1200px;
+      margin: 3rem auto;
+      padding: 0 20px;
+    }
+    
+    .info-card {
+      background: white;
+      border-radius: 10px;
+      padding: 25px;
+      margin-bottom: 30px;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    }
+    
+    .info-card h2 {
+      color: var(--secondary-color);
+      margin-top: 0;
+      border-bottom: 2px solid var(--accent-color);
+      padding-bottom: 10px;
+      display: flex;
+      align-items: center;
+    }
+    
+    .info-card h2 img {
+      width: 30px;
+      margin-right: 10px;
+    }
+    
+    .model-badge {
+      display: inline-block;
+      background-color: var(--accent-color);
+      color: white;
+      padding: 5px 10px;
+      border-radius: 20px;
+      font-size: 0.9rem;
+      margin-left: 10px;
+    }
+    
+    footer {
+      background: var(--dark-color);
+      color: white;
+      text-align: center;
+      padding: 1.5rem 0;
+      margin-top: 3rem;
+    }
+    
+    @media (max-width: 768px) {
+      .container {
+        grid-template-columns: 1fr;
+      }
+      
+      .header h1 {
+        font-size: 2rem;
+      }
+    }
+  </style>
 </head>
 <body>
-  <h1>🧠 Herramientas Inteligentes IA</h1>
-  <div class="container">
-    <a href="/preguntas"><img src="{{ url_for('static', filename='images/preguntas.png') }}" alt="Preguntas"><span>Generar Preguntas</span></a>
-    <a href="/resumen"><img src="{{ url_for('static', filename='images/resumen.png') }}" alt="Resumen"><span>Resumir Texto</span></a>
-    <a href="/traducir"><img src="{{ url_for('static', filename='images/traduccion.png') }}" alt="Traducir"><span>Traducir Texto</span></a>
-    <a href="/responder"><img src="{{ url_for('static', filename='images/responder.png') }}" alt="Responder"><span>Responder Pregunta</span></a>
-    <a href="/imagen"><img src="{{ url_for('static', filename='images/imagenes.png') }}" alt="Imagen"><span>Generar Imagen</span></a>
+  <div class="header">
+    <h1>
+      <img src="{{ url_for('static', filename='images/robo.png') }}" alt="AI Logo" class="logo">
+      Herramientas Inteligentes IA
+    </h1>
   </div>
+  
+  <div class="container">
+    <div class="card">
+      <a href="/preguntas">
+        <img src="{{ url_for('static', filename='images/preguntas.png') }}" alt="Preguntas">
+        <span>Generar Preguntas</span>
+        <p>Crea preguntas relevantes a partir de cualquier texto</p>
+      </a>
+    </div>
+    
+    <div class="card">
+      <a href="/resumen">
+        <img src="{{ url_for('static', filename='images/resumen.png') }}" alt="Resumen">
+        <span>Resumir Texto</span>
+        <p>Obtén resúmenes concisos de documentos largos</p>
+      </a>
+    </div>
+    
+    <div class="card">
+      <a href="/traducir">
+        <img src="{{ url_for('static', filename='images/traduccion.png') }}" alt="Traducir">
+        <span>Traducir Texto</span>
+        <p>Traduce contenido de inglés a español</p>
+      </a>
+    </div>
+    
+    <div class="card">
+      <a href="/responder">
+        <img src="{{ url_for('static', filename='images/responder.png') }}" alt="Responder">
+        <span>Responder Pregunta</span>
+        <p>Obtén respuestas basadas en contexto</p>
+      </a>
+    </div>
+    
+    <div class="card">
+      <a href="/imagen">
+        <img src="{{ url_for('static', filename='images/imagenes.png') }}" alt="Imagen">
+        <span>Generar Imagen</span>
+        <p>Crea imágenes a partir de descripciones textuales</p>
+      </a>
+    </div>
+  </div>
+  
+  <div class="info-section">
+    <div class="info-card">
+      <h2>
+        <img src="{{ url_for('static', filename='images/cere.png') }}" alt="Transformers">
+        ¿Qué son los Transformers?
+      </h2>
+      <p>Los Transformers son una arquitectura de red neuronal introducida en 2017 que ha revolucionado el procesamiento del lenguaje natural (NLP). Utilizan mecanismos de atención para procesar secuencias de datos, permitiendo entender el contexto completo de las palabras en un texto.</p>
+      <p>Esta tecnología es la base de modelos avanzados como GPT, BERT y T5, que pueden realizar tareas como traducción, generación de texto y resumen con un rendimiento similar al humano.</p>
+    </div>
+    
+    <div class="info-card">
+      <h2>
+        <img src="{{ url_for('static', filename='images/t.png') }}" alt="T5 Model">
+        Modelo T5 <span class="model-badge">Text-to-Text Transfer Transformer</span>
+      </h2>
+      <p>El modelo T5 (Text-To-Text Transfer Transformer) es un framework unificado que convierte todos los problemas de lenguaje en un formato texto-a-texto. Esto significa que tanto las entradas como las salidas son siempre cadenas de texto.</p>
+      <p>En esta aplicación utilizamos T5 para tareas como resumen de texto y respuesta a preguntas. Su versatilidad permite un excelente rendimiento en múltiples tareas de NLP con una sola arquitectura de modelo.</p>
+    </div>
+  </div>
+  
+  <footer>
+    <p>© 2023 Generador IA - Todos los derechos reservados</p>
+    <p>Powered by Transformers & Stable Diffusion</p>
+  </footer>
 </body>
 </html>
